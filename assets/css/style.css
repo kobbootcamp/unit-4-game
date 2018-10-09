@@ -1,0 +1,81 @@
+body {
+    background-image: url("../images/background3.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-color: black;
+    background-size: cover;
+    /* background-size: auto; */
+    z-index:-1;
+}
+
+#enemyobi {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+    width: 100px;
+}
+
+#enemyluke {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+    width: 100px;
+}
+
+#enemymaul {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+    width: 100px;
+}
+
+#enemysid {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+    width: 100px;
+}
+
+.card-body {
+    margin:0px;
+    padding:0px;
+    text-align: center;
+
+}
+
+.card-title {
+    padding:0px;
+    margin: 0px;
+}
+
+.card {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: green;
+    border-width: 3px;
+}
+
+#CharacterText {
+    color: white;
+
+
+}
+.enemyWrapper {
+    color: white;
+
+
+}
+
+img {
+    width:100px;
+    height: 70px;
+}
