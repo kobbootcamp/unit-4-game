@@ -62,6 +62,7 @@ body {
     border-style: solid;
     border-color: green;
     border-width: 3px;
+    text-align: center;
 }
 
 #CharacterText {
