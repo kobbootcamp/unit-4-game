@@ -261,7 +261,7 @@ $(document).ready(function () {
                     document.getElementById("commentary1").style.display = "block";
                     document.getElementById("commentary2").style.display = "block";
                     $("#commentary1").html("After a brilliant showing, ");
-                    $("#commentary2").html(capNameString + " is the undistputed champion of the universe!");
+                    $("#commentary2").html(capNameString + " is the undisputed champion of the universe!");
 
                     //hide unnecessary controls (show reset button to play again)
                     document.getElementById("CharacterText").style.display = "none";
