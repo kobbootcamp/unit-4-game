@@ -196,7 +196,7 @@ $(document).ready(function () {
                 //we dead!  process the following:
 
                 //change the image to skull and crossbones
-                document.getElementById(hero + "Image").src = "assets/images/skull.JPG";
+                document.getElementById(hero + "Image").src = "assets/images/skull.png";
 
                 //change the hero score to "DEAD"
                 var herotemp = "#" + hero + "score";
