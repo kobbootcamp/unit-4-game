@@ -11,7 +11,7 @@ $(document).ready(function () {
     var baseAttackPower;
     var heroHP = 0;
     var enemyHP = 0;
-    
+
     //combatant identification
     var hero;
     var enemyChar;
@@ -29,12 +29,12 @@ $(document).ready(function () {
     var game = {
         charArr: ["obi", "luke", "maul", "sid"],
         imgArr: ["assets/images/obi-wan.JPG", "assets/images/LukeSkywalker.JPG", "assets/images/darthMaul.JPG", "assets/images/darthSid.JPG"],
-        attackPower: [6, 5, 4, 3],
+        attackPower: [9, 12, 4, 6],
         counterAttack: {
             enemyobi: 10,
-            enemyluke: 10,
-            enemymaul: 10,
-            enemysid: 10
+            enemyluke: 5,
+            enemymaul: 25,
+            enemysid: 20
         },
         charStartingHPArr: {
             "enemyobi": 120,
@@ -54,16 +54,17 @@ $(document).ready(function () {
                     $("#CharacterText").css("color", "gray");
                     $("#enemyHeader").css("color", "white");
 
+                    //find the enemy id and add class = "enemy"
                     var enemy = document.getElementById(game.charArr[i]);
                     enemy.classList.add("enemy");
 
                     //append the entire enemy div to enemies class
                     $(".enemies").append(enemy);
-                    document.getElementById("enemyHeader").style.display = "block"
+                    document.getElementById("enemyHeader").style.display = "block";
                 }
                 else {
                     //set the active char variable
-                    hero = selectedchar
+                    hero = selectedchar;
 
                     //set the Health Points counter
                     heroHP = game.startingHP[i];
@@ -81,44 +82,57 @@ $(document).ready(function () {
             })
 
         },
-        moveFighter: function (fighterId) { 
+        moveFighter: function (fighterId) {
 
             //move the selected enemy to the cage
             //if user is allowed to pick enemy
             if (pickEnemy) {
 
-            //move to the cage
-            var fighter = document.getElementById(fighterId);
-            $("#cage").append(fighter)
+                //move to the cage
+                var fighter = document.getElementById(fighterId);
+                $("#cage").append(fighter);
 
-            //set the enemyChar varible
-            enemyChar = fighterId
+                //set the enemyChar varible
+                enemyChar = fighterId;
 
-            //load the counter attack variables
-            game.setEnemyStats(fighterId);
+                //load the counter attack variables
+                game.setEnemyStats(fighterId);
 
-            //set the heading colors to guide the user
-            $("#enemyHeader").css("color", "gray");
-            $("#cageHeader").css("color", "white");
+                //set the heading colors to guide the user
+                $("#enemyHeader").css("color", "gray");
+                $("#cageHeader").css("color", "white");
 
-            //show the attack button and cage header
-            document.getElementById("attackbutton").style.display = "block"
-            document.getElementById("cageHeader").style.display = "block"
+                //show the attack button and cage header
+                document.getElementById("attackbutton").style.display = "block";
+                document.getElementById("cageHeader").style.display = "block";
+                document.getElementById("commentary1").style.display = "block";
+                document.getElementById("commentary2").style.display = "block";
 
-            //prevent the user from selecting a second enemy
-            pickEnemy=false;
+                //clear the commentary
+                $("#commentary1").html("");
+                $("#commentary2").html("");
+
+                //prevent the user from selecting a second enemy
+                pickEnemy = false;
             }
         },
 
         updateDisplay: function () {
 
             //update the hero's score on screen
-            var herotemp = "#" + hero + "score"
+            var herotemp = "#" + hero + "score";
             $(herotemp).html(heroHP);
 
             //updates the enemy's score on screen
-            var enemytemp = "#" + enemyChar + "score"
+            var enemytemp = "#" + enemyChar + "score";
             $(enemytemp).html(enemyHP);
+
+            //update the commentary
+            var commmentaryPoints = numOfAttack * baseAttackPower;
+            var capNameString = game.capName(hero);
+            $("#commentary1").html(capNameString + " attacks and causes " + commmentaryPoints + " point of damage!");
+            var capNameString = game.capName(enemyChar);
+            $("#commentary2").html(capNameString + " respondes with a counterattack of " + enemycounterAttack + " damage points.");
         },
         setEnemyStats: function (fighterId) {
             //set the enemy stats based on the selected enemy
@@ -144,11 +158,11 @@ $(document).ready(function () {
 
         initialSetup: function () {
             // hide the buttons and titles until they are needed
-            document.getElementById("gameOver").style.display = "none"
-            document.getElementById("attackbutton").style.display = "none"
-            document.getElementById("resetbutton").style.display = "none"
-            document.getElementById("enemyHeader").style.display = "none"
-            document.getElementById("cageHeader").style.display = "none"
+            document.getElementById("gameOver").style.display = "none";
+            document.getElementById("attackbutton").style.display = "none";
+            document.getElementById("resetbutton").style.display = "none";
+            document.getElementById("enemyHeader").style.display = "none";
+            document.getElementById("cageHeader").style.display = "none";
 
 
             //set the inital health points of each character
@@ -179,36 +193,45 @@ $(document).ready(function () {
 
 
             if (!this.stillAlive()) {
-               //we dead!  process the following:
+                //we dead!  process the following:
 
-               //change the image to skull and crossbones
-                document.getElementById(hero + "Image").src = "assets/images/skull.JPG"
+                //change the image to skull and crossbones
+                document.getElementById(hero + "Image").src = "assets/images/skull.JPG";
 
                 //change the hero score to "DEAD"
-                var herotemp = "#" + hero + "score"
+                var herotemp = "#" + hero + "score";
                 $(herotemp).html("DEAD");
 
                 //stop the user from clicking the attack button
                 gameOn = false
-    
+
                 //hid the attack button and show game over message and reset button
-                document.getElementById("gameOver").style.display = "block"
-                document.getElementById("resetbutton").style.display = "block"
-                document.getElementById("attackbutton").style.display = "none"
+                document.getElementById("gameOver").style.display = "block";
+                document.getElementById("resetbutton").style.display = "block";
+                document.getElementById("attackbutton").style.display = "none";
 
                 //change the cage header to "you lost"
                 $("#cageHeader").html("You lost!");
+
+                var capNameString = game.capName(hero)
+                $("#commentary1").html("It's a sad day for " + capNameString + " fans...");
+                $("#commentary2").html(capNameString + " has been defeated!");
             };
 
 
             if (this.killEnemy()) {
                 //increment the kill counter
-                kills++
+                kills++;
 
                 //Mark the enemy as dead
-                document.getElementById(enemyChar + "Image").src = "assets/images/skull.JPG"
-                var enemytemp = "#" + enemyChar + "score"
+                document.getElementById(enemyChar + "Image").src = "assets/images/skull.JPG";
+                var enemytemp = "#" + enemyChar + "score";
                 $(enemytemp).html("DEAD");
+
+                //Update the commentary
+                var capNameString = game.capName(enemyChar);
+                $("#commentary1").html(capNameString + " has been defeated!");
+                document.getElementById("commentary2").style.display = "none";
 
                 //don't let the user click forward
                 gameOn = false;
@@ -217,7 +240,7 @@ $(document).ready(function () {
                 if (game.didWeWin()) {
 
                     //show the gameOver div
-                    document.getElementById("gameOver").style.display = "block"
+                    document.getElementById("gameOver").style.display = "block";
 
                     //change the gameOver div to "Winner"
                     $("#gameOver").html("Winner");
@@ -226,18 +249,26 @@ $(document).ready(function () {
                     $("#cageHeader").html("YOU WIN!");
 
                     //Hide the enemy card
-                    document.getElementById(enemyChar).style.display = "none"
+                    document.getElementById(enemyChar).style.display = "none";
 
                     //WINNER'S CIRCLE:
                     //grab the winner and move to the #cage div
                     var WinnersCircle = document.getElementById(hero);
-                    $("#cage").append(WinnersCircle)
+                    $("#cage").append(WinnersCircle);
+
+                    //Update commentary
+                    var capNameString = game.capName(hero);
+                    document.getElementById("commentary1").style.display = "block";
+                    document.getElementById("commentary2").style.display = "block";
+                    $("#commentary1").html("After a brilliant showing, ");
+                    $("#commentary2").html(capNameString + " is the undistputed champion of the universe!");
 
                     //hide unnecessary controls (show reset button to play again)
-                    document.getElementById("CharacterText").style.display = "none"
-                    document.getElementById("enemyHeader").style.display = "none"
-                    document.getElementById("resetbutton").style.display = "block"
-                    document.getElementById("attackbutton").style.display = "none"
+                    document.getElementById("CharacterText").style.display = "none";
+                    document.getElementById("enemyHeader").style.display = "none";
+                    document.getElementById("resetbutton").style.display = "block";
+                    document.getElementById("attackbutton").style.display = "none";
+
                 }
                 else {
                     //didn't win yet...
@@ -249,17 +280,19 @@ $(document).ready(function () {
                         gameOn = true;
 
                         //Hide unnecessary controls
-                        document.getElementById(enemyChar).style.display = "none"
-                        document.getElementById("cageHeader").style.display = "none"
-                        document.getElementById("attackbutton").style.display = "none"
-                        document.getElementById("resetbutton").style.display = "none"
+                        document.getElementById(enemyChar).style.display = "none";
+                        document.getElementById("cageHeader").style.display = "none";
+                        document.getElementById("attackbutton").style.display = "none";
+                        document.getElementById("resetbutton").style.display = "none";
+                        document.getElementById("commentary1").style.display = "none";
+                        document.getElementById("commentary2").style.display = "none";
 
                         //change the header coloring to direct the user
                         $("#enemyHeader").css("color", "white");
                         $("#cageHeader").css("color", "gray");
 
                         //allow the user to select another enemy
-                        pickEnemy=true;
+                        pickEnemy = true;
 
                     }, 750);
                 }
@@ -296,16 +329,16 @@ $(document).ready(function () {
         },
 
         causeDamage: function () {
-            enemyHP = enemyHP - (numOfAttack * baseAttackPower)
+            enemyHP = enemyHP - (numOfAttack * baseAttackPower);
         },
 
         receiveDamage: function () {
             heroHP = heroHP - enemycounterAttack;
         },
 
-        resetGame: function () {
-            for (i = 0; i < 4; i++) {
-            }
+        capName: function (name) {
+            var capitalized = name[0].toUpperCase() + name.slice(1);
+            return capitalized;
         }
     }
 
