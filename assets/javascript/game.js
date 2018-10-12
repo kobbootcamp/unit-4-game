@@ -1,7 +1,7 @@
 
 $(document).ready(function () {
     //variables used to initiate the game
-    var lukeHP = 100;
+    var lukeHP = 110;
     var obiHP = 120;
     var maulHP = 180;
     var sidHP = 150;
@@ -29,18 +29,18 @@ $(document).ready(function () {
     var game = {
         charArr: ["obi", "luke", "maul", "sid"],
         imgArr: ["assets/images/obi-wan.JPG", "assets/images/LukeSkywalker.JPG", "assets/images/darthMaul.JPG", "assets/images/darthSid.JPG"],
-        attackPower: [9, 12, 4, 6],
+        attackPower: [2, 8, 10, 7],
         counterAttack: {
-            enemyobi: 10,
-            enemyluke: 5,
-            enemymaul: 25,
-            enemysid: 20
+            enemyobi: 2,
+            enemyluke: 8,
+            enemymaul: 10,
+            enemysid: 7
         },
         charStartingHPArr: {
-            "enemyobi": 120,
+            "enemyobi": 150,
             "enemyluke": 100,
-            "enemymaul": 180,
-            "enemysid": 150
+            "enemymaul": 130,
+            "enemysid": 80
         },
         startingHP: [120, 100, 180, 150],
         moveUnselected: function (selectedchar) {
