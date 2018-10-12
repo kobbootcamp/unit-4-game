@@ -1,3 +1,9 @@
+@font-face {
+    font-family: stjedise;
+    src: url(../fonts/STJEDISE.TTF);
+
+}
+
 body {
     background-image: url("../images/background3.jpg");
     background-repeat: no-repeat;
@@ -8,14 +14,7 @@ body {
     z-index:-1;
 }
 
-#enemyobi {
-    float:left;
-    margin: 10px;
-    border-style: solid;
-    border-color: red;
-    border-width: 3px;
-    width: 100px;
-}
+
 
 #enemyluke {
     float:left;
@@ -65,18 +64,46 @@ body {
     text-align: center;
 }
 
-#CharacterText {
+.wordOnThePage {
+    font-family: "Mukta";
     color: white;
+    font-size: 25px;
 
 
 }
 .enemyWrapper {
     color: white;
 
-
 }
 
 img {
     width:100px;
     height: 70px;
+}
+
+.enemy {
+    float:left;
+    margin: 10px;
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+    width: 100px;
+}
+
+#gameOver {
+    padding-top: 50px;
+    font-family: "stjedise";
+    color: white;
+    font-size: 50px;
+
+}
+
+#title {
+    font-family: "stjedise";
+    color: white;
+    font-size: 50px;
+}
+
+.btn {
+        margin: 10px;
 }

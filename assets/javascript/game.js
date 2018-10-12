@@ -1,89 +1,66 @@
 
 $(document).ready(function () {
-    var heroSelected = false;
+    //variables used to initiate the game
     var lukeHP = 100;
     var obiHP = 120;
     var maulHP = 180;
     var sidHP = 150;
-    // var attackPower;
 
+    //variable to manage the stats of game
     var enemycounterAttack;
     var baseAttackPower;
-    var numOfAttack = 0;
-
-    var hero;
-    var enemyChar;
     var heroHP = 0;
     var enemyHP = 0;
+    
+    //combatant identification
+    var hero;
+    var enemyChar;
 
+    //counters
+    var kills = 0;
+    var numOfAttack = 0;
 
+    //flags to manage flow of the game
+    var heroSelected = false;
+    var pickEnemy = true;
+    var gameOn = true;
+
+    //game object
     var game = {
-
         charArr: ["obi", "luke", "maul", "sid"],
         imgArr: ["assets/images/obi-wan.JPG", "assets/images/LukeSkywalker.JPG", "assets/images/darthMaul.JPG", "assets/images/darthSid.JPG"],
-        attackPower: [8,6,2,4],
+        attackPower: [6, 5, 4, 3],
         counterAttack: {
             enemyobi: 10,
-            enemyluke: 5,
-            enemymaul: 25,
-            enemysid: 20
+            enemyluke: 10,
+            enemymaul: 10,
+            enemysid: 10
         },
         charStartingHPArr: {
-            "enemyobi": 120, 
+            "enemyobi": 120,
             "enemyluke": 100,
-            "enemymaul": 180, 
-            "enemysid" :150
+            "enemymaul": 180,
+            "enemysid": 150
         },
-        startingHP: [120,100,180,150],
+        startingHP: [120, 100, 180, 150],
         moveUnselected: function (selectedchar) {
             heroSelected = true;
 
             for (i = 0; i < game.charArr.length; i++) {
-                
+
                 if (selectedchar != game.charArr[i]) {
 
                     //Turn the active instructions to white, inactive instructions to gray
                     $("#CharacterText").css("color", "gray");
                     $("#enemyHeader").css("color", "white");
 
-                    //make the non-selected characters invisible
-                    document.getElementById(game.charArr[i]).style.display = "none"
+                    var enemy = document.getElementById(game.charArr[i]);
+                    enemy.classList.add("enemy");
 
-                    //create an enemy div, give it the class "card" and set id to "enemy" + char name
-                    var enemyCardDiv = document.createElement("div");
-                    enemyCardDiv.classList.add("card");
-                    enemyCardDiv.classList.add("enemy");
-                    enemyCardDiv.setAttribute("id", "enemy" + game.charArr[i]);
-
-                    //create an img, set the class to "card-img-top", and set image source
-                    var enemyImgDiv = document.createElement("img");
-                    enemyImgDiv.classList.add("card-img-top");
-                    enemyImgDiv.setAttribute("src", game.imgArr[i]);
-
-                    //create card body div, give it the "card-body" class and an id with small 'score'
-                    var enemyCardBody = document.createElement("div");
-                    enemyCardBody.classList.add("card-body");
-                    enemyCardBody.setAttribute("id", "enemy" + game.charArr[i] + "score");
-                   
-                    //create a card title div, give it the "card-title" class
-                    var enemyCardTitle = document.createElement("div");
-                    enemyCardTitle.classList.add("card-title");
-
-                    //append the card title tot he card body
-                    enemyCardBody.appendChild(enemyCardTitle);
-
-                    //append the card image to the enemy div
-                    enemyCardDiv.appendChild(enemyImgDiv);
-
-                    //append the card body to the enemy div
-                    enemyCardDiv.appendChild(enemyCardBody);
-       
                     //append the entire enemy div to enemies class
-                    $(".enemies").append(enemyCardDiv);
-
-                    game.resetDisplay()
+                    $(".enemies").append(enemy);
+                    document.getElementById("enemyHeader").style.display = "block"
                 }
-
                 else {
                     //set the active char variable
                     hero = selectedchar
@@ -94,101 +71,87 @@ $(document).ready(function () {
                     //set the baseAttackPower variable
                     baseAttackPower = game.attackPower[i];
 
-
-
                 };
             }
-
-
         },
         setOnClickListener: function () {
+            //if user clicks on an enemy, call the moveFighter function
             $(".enemy").on("click", function () {
                 game.moveFighter(this.id);
             })
-            // return setOnClickListener
-        },
-        moveFighter: function (fighterId) { //enemyluke
 
-            //mark the fighter as thisfighter
-            // var tempName = fighterId + "Score"; //enemylukeScore
-          
-            // var tempHolder = document.getElementById(tempName);
-            // tempHolder.classList.add("thisfighter");
-            
-alert("fighter id: " + fighterId)
+        },
+        moveFighter: function (fighterId) { 
+
+            //move the selected enemy to the cage
+            //if user is allowed to pick enemy
+            if (pickEnemy) {
+
             //move to the cage
             var fighter = document.getElementById(fighterId);
-            // fighter.append("#" + fighterId + "score")
             $("#cage").append(fighter)
-            
-            game.resetDisplay()
 
+            //set the enemyChar varible
             enemyChar = fighterId
-            //load the counter attack variable
-            switch (fighterId) {
-                case "enemyluke":
-                    enemycounterAttack = game.counterAttack.enemyluke;
-                    enemyHP=game.charStartingHPArr.enemyluke;
-                    break;
-                case "enemymaul":
-                    enemycounterAttack = game.counterAttack.enemymaul;
-                    enemyHP=game.charStartingHPArr.enemymaul;
-                    break;
-                case "enemyobi":
-                    enemycounterAttack = game.counterAttack.enemyobi;
-                    enemyHP=game.charStartingHPArr.enemyobi;
-                    break;
-                case "enemysid":
-                    enemycounterAttack = game.counterAttack.enemysid;
-                    enemyHP=game.charStartingHPArr.enemysid;
-                    break;
-            }
 
-            
-            // enemyHP=charStartingHPArr enemymaul
+            //load the counter attack variables
+            game.setEnemyStats(fighterId);
+
+            //set the heading colors to guide the user
             $("#enemyHeader").css("color", "gray");
             $("#cageHeader").css("color", "white");
 
+            //show the attack button and cage header
+            document.getElementById("attackbutton").style.display = "block"
+            document.getElementById("cageHeader").style.display = "block"
 
+            //prevent the user from selecting a second enemy
+            pickEnemy=false;
+            }
         },
 
         updateDisplay: function () {
 
-
-            // $("#lukeScore").replaceWith(lukeHP);
-            // $("#obiScore").replaceWith(obiHP);
-            // $("#maulScore").replaceWith(maulHP);
-            // $("#sidScore").replaceWith(sidHP);
-
-            // $("#enemylukeScore").replaceWith(lukeHP);
-            // $("#enemyobiScore").replaceWith(obiHP);
-            // $("#enemymaulScore").replaceWith(maulHP);
-            // $("#enemysidScore").replaceWith(sidHP);
-
-            //update the hero
-            var herotemp="#" + hero + "score"
+            //update the hero's score on screen
+            var herotemp = "#" + hero + "score"
             $(herotemp).html(heroHP);
 
-            //updates the fighter's HP
-            var enemytemp="#" + enemyChar + "score"  //#enemylukescore
+            //updates the enemy's score on screen
+            var enemytemp = "#" + enemyChar + "score"
             $(enemytemp).html(enemyHP);
-        alert(enemyChar)
+        },
+        setEnemyStats: function (fighterId) {
+            //set the enemy stats based on the selected enemy
+            switch (fighterId) {
+                case "luke":
+                    enemycounterAttack = game.counterAttack.enemyluke;
+                    enemyHP = game.charStartingHPArr.enemyluke;
+                    break;
+                case "maul":
+                    enemycounterAttack = game.counterAttack.enemymaul;
+                    enemyHP = game.charStartingHPArr.enemymaul;
+                    break;
+                case "obi":
+                    enemycounterAttack = game.counterAttack.enemyobi;
+                    enemyHP = game.charStartingHPArr.enemyobi;
+                    break;
+                case "sid":
+                    enemycounterAttack = game.counterAttack.enemysid;
+                    enemyHP = game.charStartingHPArr.enemysid;
+                    break;
+            }
         },
 
-        resetDisplay: function() {
+        initialSetup: function () {
+            // hide the buttons and titles until they are needed
+            document.getElementById("gameOver").style.display = "none"
+            document.getElementById("attackbutton").style.display = "none"
+            document.getElementById("resetbutton").style.display = "none"
+            document.getElementById("enemyHeader").style.display = "none"
+            document.getElementById("cageHeader").style.display = "none"
 
-            // for (i=0; i<4;i++) {
-            //     if (game.charArr[i]==hero){
-            //     }
-            //     else if (game.charArr[i]==enemyChar) {
-            //     }
-            //     else {
-            //         var enemytemp="#enemy" + game.charArr[i] + "score"
-            //         alert(enemytemp)
-            //         $(enemytemp).replaceWith(game.startingHP[i]);
-            //         alert(game.startingHP[i])
-            //     }
-            // }
+
+            //set the inital health points of each character
             $("#lukeScore").replaceWith(lukeHP);
             $("#obiScore").replaceWith(obiHP);
             $("#maulScore").replaceWith(maulHP);
@@ -198,34 +161,113 @@ alert("fighter id: " + fighterId)
             $("#enemyobiscore").replaceWith(obiHP);
             $("#enemymaulscore").replaceWith(maulHP);
             $("#enemysidscore").replaceWith(sidHP);
-            
         },
-        updateScore: function () {
 
+        attack: function () {
 
-        },
-        initialSetup: function(){
-            $("#lukeScore").replaceWith(lukeHP);
-            $("#obiScore").replaceWith(obiHP);
-            $("#maulScore").replaceWith(maulHP);
-            $("#sidScore").replaceWith(sidHP);
+            //increment the attack counter
+            numOfAttack++
 
-            $("#enemylukescore").replaceWith(lukeHP);
-            $("#enemyobiscore").replaceWith(obiHP);
-            $("#enemymaulscore").replaceWith(maulHP);
-            $("#enemysidscore").replaceWith(sidHP);
-        },
-        attack: function (id, enemy) {
+            //cause damage to enemy
             this.causeDamage();
+
+            //receive damage from enemy
             this.receiveDamage();
-            this.stillAlive();
-            this.killEnemy();
 
+            //update the score
+            this.updateDisplay();
+
+
+            if (!this.stillAlive()) {
+               //we dead!  process the following:
+
+               //change the image to skull and crossbones
+                document.getElementById(hero + "Image").src = "assets/images/skull.JPG"
+
+                //change the hero score to "DEAD"
+                var herotemp = "#" + hero + "score"
+                $(herotemp).html("DEAD");
+
+                //stop the user from clicking the attack button
+                gameOn = false
+    
+                //hid the attack button and show game over message and reset button
+                document.getElementById("gameOver").style.display = "block"
+                document.getElementById("resetbutton").style.display = "block"
+                document.getElementById("attackbutton").style.display = "none"
+
+                //change the cage header to "you lost"
+                $("#cageHeader").html("You lost!");
+            };
+
+
+            if (this.killEnemy()) {
+                //increment the kill counter
+                kills++
+
+                //Mark the enemy as dead
+                document.getElementById(enemyChar + "Image").src = "assets/images/skull.JPG"
+                var enemytemp = "#" + enemyChar + "score"
+                $(enemytemp).html("DEAD");
+
+                //don't let the user click forward
+                gameOn = false;
+
+                //check to see if we have a winner
+                if (game.didWeWin()) {
+
+                    //show the gameOver div
+                    document.getElementById("gameOver").style.display = "block"
+
+                    //change the gameOver div to "Winner"
+                    $("#gameOver").html("Winner");
+
+                    //change the cageHeader to "you win"
+                    $("#cageHeader").html("YOU WIN!");
+
+                    //Hide the enemy card
+                    document.getElementById(enemyChar).style.display = "none"
+
+                    //WINNER'S CIRCLE:
+                    //grab the winner and move to the #cage div
+                    var WinnersCircle = document.getElementById(hero);
+                    $("#cage").append(WinnersCircle)
+
+                    //hide unnecessary controls (show reset button to play again)
+                    document.getElementById("CharacterText").style.display = "none"
+                    document.getElementById("enemyHeader").style.display = "none"
+                    document.getElementById("resetbutton").style.display = "block"
+                    document.getElementById("attackbutton").style.display = "none"
+                }
+                else {
+                    //didn't win yet...
+
+                    //wait 3/4 of a second...
+                    setTimeout(function () {
+
+                        //Ok- now the user can click
+                        gameOn = true;
+
+                        //Hide unnecessary controls
+                        document.getElementById(enemyChar).style.display = "none"
+                        document.getElementById("cageHeader").style.display = "none"
+                        document.getElementById("attackbutton").style.display = "none"
+                        document.getElementById("resetbutton").style.display = "none"
+
+                        //change the header coloring to direct the user
+                        $("#enemyHeader").css("color", "white");
+                        $("#cageHeader").css("color", "gray");
+
+                        //allow the user to select another enemy
+                        pickEnemy=true;
+
+                    }, 750);
+                }
+            }
         },
-        stillAlive: function (hero) {
-            var HP = hero + "HP";
-
-            if (HP > 0) {
+        stillAlive: function () {
+            //true if health points are greater than zero
+            if (heroHP > 0) {
                 return true;
             }
             else {
@@ -233,16 +275,24 @@ alert("fighter id: " + fighterId)
             };
 
         },
-        killEnemy: function (enemyChar) {
-            var HP = enemyChar + "HP";
-
-            if (HP <= 0) {
+        killEnemy: function () {
+            //true if enemy  health is less than/equal to zero
+            if (enemyHP <= 0) {
                 return true;
             }
             else {
                 return false;
             };
+        },
 
+        didWeWin: function () {
+            //true if enemy kills = 3
+            if (kills === 3) {
+                return true;
+            }
+            else {
+                return false;
+            }
         },
 
         causeDamage: function () {
@@ -250,25 +300,16 @@ alert("fighter id: " + fighterId)
         },
 
         receiveDamage: function () {
-            heroHP = heroHP-enemycounterAttack;
+            heroHP = heroHP - enemycounterAttack;
         },
 
-        recalculateAttackPower: function () {
-
-
-        },
         resetGame: function () {
             for (i = 0; i < 4; i++) {
-
             }
-
         }
     }
 
-
-   
     game.initialSetup()
-
 
     $(".card").on("click", function () {
         if (!heroSelected) {
@@ -277,21 +318,15 @@ alert("fighter id: " + fighterId)
         }
     })
 
-
     $("#attackbutton").on("click", function () {
-        //increment the number of attacks
-        numOfAttack++
 
-        game.causeDamage();
-        game.receiveDamage();
+        if (gameOn) {
+            game.attack();
+        }
 
-        // game.stillAlive(activeChar)
-        // game.killEnemy(enemyChar)
-
-
-        // game.updateScore();
-        game.updateDisplay();
-
+    })
+    $("#resetbutton").on("click", function () {
+        location.reload();
     })
 
 })
