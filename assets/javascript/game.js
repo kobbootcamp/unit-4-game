@@ -132,7 +132,7 @@ $(document).ready(function () {
             var capNameString = game.capName(hero);
             $("#commentary1").html(capNameString + " attacks and causes " + commmentaryPoints + " point of damage!");
             var capNameString = game.capName(enemyChar);
-            $("#commentary2").html(capNameString + " respondes with a counterattack of " + enemycounterAttack + " damage points.");
+            $("#commentary2").html(capNameString + " responds with a counterattack of " + enemycounterAttack + " damage points.");
         },
         setEnemyStats: function (fighterId) {
             //set the enemy stats based on the selected enemy
